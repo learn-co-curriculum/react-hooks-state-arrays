@@ -191,9 +191,9 @@ So to use that technique to solve our problem, here's how our click event
 handler would look:
 
 ```js
-function handleLiClick(foodToUpdate) {
+function handleLiClick(id) {
   const newFoodArray = foods.map((food) => {
-    if (food.id === foodToUpdate.id) {
+    if (food.id === id) {
       return {
         ...food,
         heatLevel: food.heatLevel + 1,
