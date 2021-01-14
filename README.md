@@ -1,7 +1,5 @@
 # React State and Arrays
 
-## Overview
-
 ## Objectives
 
 1. Work with arrays in state
@@ -316,18 +314,11 @@ updating the DOM correctly.
 
 ## Conclusion
 
-Thinking like a React developer involves making a lot of decisions about how to
-structure your components, particularly when it comes to **props** and **state**.
-Now that you've seen the process and some common patterns for working with
-state, it's up to you to apply these decisions to your own components moving
-forward.
-
-In particular, keep in mind that **state should be used for dynamic variables**,
-and that when you're updating state, you should **never mutate objects or
-arrays**.
+When working with arrays in state, it's important to find ways to set state
+without mutating the underlying arrays. That means using array methods like
+`map` and `filter`, or the spread operator, to create copies of arrays before
+setting state.
 
 ## Resources
 
-- [The useState hook](https://reactjs.org/docs/hooks-state.html)
-- [Props vs. State](https://github.com/uberVU/react-guide/blob/master/props-vs-state.md)
-- [Thinking in React](https://reactjs.org/docs/thinking-in-react.html#step-3-identify-the-minimal-but-complete-representation-of-ui-state)
+- [React State Arrays](https://www.robinwieruch.de/react-state-array-add-update-remove)
