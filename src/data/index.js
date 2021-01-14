@@ -9,7 +9,7 @@ const newSpicyFoods = [
   { id: 5, name: "5 Alarm Chili", cuisine: "American", heatLevel: 5 },
 ];
 
-export function getNewSpicyFood() {
+function getNewSpicyFood() {
   return newSpicyFoods.shift();
 }
 
