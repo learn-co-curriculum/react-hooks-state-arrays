@@ -2,7 +2,7 @@
 
 ## Learning Goals
 
-- Understand how to with arrays in state
+- Understand how to work with arrays in state
 
 ## Working With Arrays
 
