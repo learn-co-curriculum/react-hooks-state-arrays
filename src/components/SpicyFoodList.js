@@ -6,6 +6,7 @@ function SpicyFoodList() {
 
   function handleAddFood() {
     const newFood = getNewSpicyFood();
+    if (newFood === undefined) return;
     console.log(newFood);
   }
 
