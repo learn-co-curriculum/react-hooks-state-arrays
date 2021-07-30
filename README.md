@@ -340,8 +340,8 @@ const foodList = foodsToDisplay.map((food) => (
 
 Having both of these variables in state and knowing how to use them in
 conjunction with each other give us a lot of power in React! All we need to
-worry about is using our programming tools &mdash; working with _data_;
-manipulating _arrays_ &mdash; and React can take care of all the hard work of
+worry about is using our programming tools — working with _data_;
+manipulating _arrays_ — and React can take care of all the hard work of
 updating the DOM correctly.
 
 ## Conclusion
