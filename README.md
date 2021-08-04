@@ -52,7 +52,7 @@ First, let's update our component to return some JSX elements based on this
 array in state. We can use `.map` on our array to generate an array of `<li>`
 elements from our array of foods, and display them in the `<ul>`:
 
-```js
+```jsx
 const foodList = foods.map((food) => (
   <li key={food.id}>
     {food.name} | Heat: {food.heatLevel} | Cuisine: {food.cuisine}
@@ -70,7 +70,7 @@ return (
 Now that our foods are displaying, time for the moment of truth: can we update
 state and get new foods to display dynamically?
 
-```js
+```jsx
 function handleAddFood() {
   const newFood = getNewSpicyFood();
   const newFoodArray = [...foods, newFood];
@@ -80,7 +80,7 @@ function handleAddFood() {
 
 This step is crucial, so let's break it down!
 
-```js
+```jsx
 const newFoodArray = [...foods, newFood];
 ```
 
@@ -109,7 +109,7 @@ _removed_ from the list.
 First, we'll need to add a click handler to the `<li>` elements, and pass in the
 id of the food we're trying to remove:
 
-```js
+```jsx
 const foodList = foods.map((food) => (
   <li key={food.id} onClick={() => handleLiClick(food.id)}>
     {food.name} | Heat: {food.heatLevel} | Cuisine: {food.cuisine}
@@ -136,7 +136,7 @@ one we want removed_.
 One common approach to this problem of creating a new array that doesn't include
 a specific element is using the `.filter` method. Here's how we can do it:
 
-```js
+```jsx
 function handleLiClick(id) {
   const newFoodArray = foods.filter((food) => food.id !== id);
   setFoods(newFoodArray);
@@ -148,7 +148,7 @@ criteria in the callback function. So if we write our callback function in
 `.filter` to look for all foods _except_ the number we're trying to remove,
 we'll get back a new, shortened list of foods:
 
-```js
+```jsx
 [1, 2, 3].filter((number) => number !== 3);
 // => [1,2]
 ```
@@ -187,7 +187,7 @@ transformations applied to the elements in the array.
 
 Here's an example of using `.map` to update _one element_ of an array:
 
-```js
+```jsx
 [1, 2, 3].map((number) => {
   if (number === 3) {
     // if the number is the one we're looking for, increment it
@@ -203,7 +203,7 @@ Here's an example of using `.map` to update _one element_ of an array:
 So to use that technique to solve our problem, here's how our click event
 handler would look:
 
-```js
+```jsx
 function handleLiClick(id) {
   const newFoodArray = foods.map((food) => {
     if (food.id === id) {
@@ -276,13 +276,13 @@ which foods to display.
 Let's set up our initial state to be a string of "All" to match the first
 `<option>` in our dropdown:
 
-```js
+```jsx
 const [filterBy, setFilterBy] = useState("All");
 ```
 
 With this state variable in place, we can update the `<select>` element to set the `filterBy` variable when its value is changed, like so:
 
-```js
+```jsx
 function handleFilterChange(event) {
   setFilterBy(event.target.value);
 }
@@ -302,7 +302,7 @@ Next, let's figure out how this filter value can be used to update what numbers
 are displayed. We will need to use _both_ of our state variables together to solve
 this problem! Here's how we can use the filter value to update which items are displayed:
 
-```js
+```jsx
 const [foods, setFoods] = useState(spicyFoods);
 const [filterBy, setFilterBy] = useState("All");
 
@@ -330,7 +330,7 @@ This will give us a new variable, `foodsToDisplay`, that will be an array of:
 Now, we just need to use `foodsToDisplay` instead of `foods` when we're
 generating the `<li>` elements:
 
-```js
+```jsx
 const foodList = foodsToDisplay.map((food) => (
   <li key={food.id} onClick={() => handleLiClick(food.id)}>
     {food.name} | Heat: {food.heatLevel} | Cuisine: {food.cuisine}
