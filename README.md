@@ -1,9 +1,8 @@
 # React State and Arrays
 
-## Objectives
+## Learning Goals
 
-1. Work with arrays in state
-2. Set up a component with multiple state variables
+- Understand how to work with arrays in state
 
 ## Working With Arrays
 
@@ -23,9 +22,23 @@ through the solution, see if you can get this working by:
 - using that array to display each spicy food as a `<li>`; and
 - **adding a new spicy food to the array** when the button is clicked.
 
-Keep in mind, when you're updating state, you should never _mutate_ the array
-&mdash; instead, find a way to make a _copy_ of the array with the new spicy
-food in it (**hint**: the spread operator is your friend here).
+One important rule to keep in mind when working with objects and arrays in
+state:
+
+**React will only update state if a new object/array is passed to `setState`**.
+That means it's important to keep in mind which array methods _mutate_ arrays,
+and which can be used to make _copies_ of arrays (**hint**: the spread operator
+is your friend here).
+
+Ok, give it a shot! Then scroll down to see a solution.
+
+...
+
+...
+
+...
+
+...
 
 ...
 
@@ -39,7 +52,7 @@ First, let's update our component to return some JSX elements based on this
 array in state. We can use `.map` on our array to generate an array of `<li>`
 elements from our array of foods, and display them in the `<ul>`:
 
-```js
+```jsx
 const foodList = foods.map((food) => (
   <li key={food.id}>
     {food.name} | Heat: {food.heatLevel} | Cuisine: {food.cuisine}
@@ -57,7 +70,7 @@ return (
 Now that our foods are displaying, time for the moment of truth: can we update
 state and get new foods to display dynamically?
 
-```js
+```jsx
 function handleAddFood() {
   const newFood = getNewSpicyFood();
   const newFoodArray = [...foods, newFood];
@@ -67,7 +80,7 @@ function handleAddFood() {
 
 This step is crucial, so let's break it down!
 
-```js
+```jsx
 const newFoodArray = [...foods, newFood];
 ```
 
@@ -75,15 +88,15 @@ Here, we're using the spread operator (`...`) to make a _copy_ of our `foods`
 array, and insert it into a _new_ array. We're also adding the newly generated
 food returned by the `getNewSpicyFood` function at the end of the array.
 
-Whenever we are updating state, it's important **not to mutate objects and
-arrays**, and instead, to create **copies** of them.
+Remember, whenever we are updating state, it's important that we always pass a
+new object/array to `setState`. That's why we're using the spread operator here
+to make a copy of the array, instead of `.push`, which will mutate the original
+array.
 
-React will _only_ re-render our component when we set state with a _new_ value;
-so we need to create a new **copy** of our original array to pass to the setter
-function, rather than mutating the original array directly and passing a
-reference to the original array.
-
-**Make sure to never mutate state directly!**
+Again, to repeat! React will _only_ re-render our component when we set state
+with a _new_ value; so we need to create a new **copy** of our original array to
+pass to the setter function, rather than mutating the original array directly
+and passing a reference to the original array.
 
 After setting state, our component should automatically re-render with the new
 list of foods.
@@ -96,7 +109,7 @@ _removed_ from the list.
 First, we'll need to add a click handler to the `<li>` elements, and pass in the
 id of the food we're trying to remove:
 
-```js
+```jsx
 const foodList = foods.map((food) => (
   <li key={food.id} onClick={() => handleLiClick(food.id)}>
     {food.name} | Heat: {food.heatLevel} | Cuisine: {food.cuisine}
@@ -107,9 +120,10 @@ const foodList = foods.map((food) => (
 Next, in the `handleLiClick` function, we need to figure out a way to update our
 array in state so it no longer includes the food.
 
-There are a few approaches you could take here, so try to find a solution on your
-own before peeking at the answer! Remember, we want to find a way to remove the
-food _without mutating state_.
+There are a few approaches you could take here, so try to find a solution on
+your own before peeking at the answer! Remember, we want to find a way to remove
+the food by _creating a new array that has all the original elements, except the
+one we want removed_.
 
 ...
 
@@ -122,7 +136,7 @@ food _without mutating state_.
 One common approach to this problem of creating a new array that doesn't include
 a specific element is using the `.filter` method. Here's how we can do it:
 
-```js
+```jsx
 function handleLiClick(id) {
   const newFoodArray = foods.filter((food) => food.id !== id);
   setFoods(newFoodArray);
@@ -134,7 +148,7 @@ criteria in the callback function. So if we write our callback function in
 `.filter` to look for all foods _except_ the number we're trying to remove,
 we'll get back a new, shortened list of foods:
 
-```js
+```jsx
 [1, 2, 3].filter((number) => number !== 3);
 // => [1,2]
 ```
@@ -155,7 +169,8 @@ in state and increment the heat level _only_ for the food that was clicked.
 
 Once again, there are a few approaches you could take here, so try to find a
 solution on your own before peeking at the answer! Remember, we want to find a
-way to update the heat level _without mutating state_.
+way to update the heat level by _creating a new array that has all the elements
+from the original array, with one element updated_.
 
 ...
 
@@ -165,14 +180,14 @@ way to update the heat level _without mutating state_.
 
 ...
 
-One approach we can take to _updating_ items in arrays without mutating state
+One approach we can take to _updating_ items in arrays by creating a new array
 involves using the `.map` method. Calling `.map` will return a new array with
 the same length as our original array (which is what we want), with some
 transformations applied to the elements in the array.
 
 Here's an example of using `.map` to update _one element_ of an array:
 
-```js
+```jsx
 [1, 2, 3].map((number) => {
   if (number === 3) {
     // if the number is the one we're looking for, increment it
@@ -188,7 +203,7 @@ Here's an example of using `.map` to update _one element_ of an array:
 So to use that technique to solve our problem, here's how our click event
 handler would look:
 
-```js
+```jsx
 function handleLiClick(id) {
   const newFoodArray = foods.map((food) => {
     if (food.id === id) {
@@ -203,6 +218,15 @@ function handleLiClick(id) {
   setFoods(newFoodArray);
 }
 ```
+
+To break down the steps:
+
+- `.map` will iterate through the array and return a new array
+- Whatever value is returned by the callback function that we pass to `.map`
+  will be added to this new array
+- If the ID of the food we're iterating over matches the ID of the food we're
+  updating, return a new food object with the heat level incremented by 1
+- Otherwise, return the original food object
 
 ### Array Cheat Sheet
 
@@ -252,31 +276,33 @@ which foods to display.
 Let's set up our initial state to be a string of "All" to match the first
 `<option>` in our dropdown:
 
-```js
+```jsx
 const [filterBy, setFilterBy] = useState("All");
 ```
 
 With this state variable in place, we can update the `<select>` element to set the `filterBy` variable when its value is changed, like so:
 
-```js
+```jsx
 function handleFilterChange(event) {
   setFilterBy(event.target.value);
 }
 
-<select name="filter" onChange={handleFilterChange}>
-  <option value="All">All</option>
-  <option value="American">American</option>
-  <option value="Sichuan">Sichuan</option>
-  <option value="Thai">Thai</option>
-  <option value="Mexican">Mexican</option>
-</select>;
+return (
+  <select name="filter" onChange={handleFilterChange}>
+    <option value="All">All</option>
+    <option value="American">American</option>
+    <option value="Sichuan">Sichuan</option>
+    <option value="Thai">Thai</option>
+    <option value="Mexican">Mexican</option>
+  </select>
+);
 ```
 
 Next, let's figure out how this filter value can be used to update what numbers
 are displayed. We will need to use _both_ of our state variables together to solve
 this problem! Here's how we can use the filter value to update which items are displayed:
 
-```js
+```jsx
 const [foods, setFoods] = useState(spicyFoods);
 const [filterBy, setFilterBy] = useState("All");
 
@@ -289,6 +315,12 @@ const foodsToDisplay = foods.filter((food) => {
 });
 ```
 
+> Remember, `.filter` returns a new array that is a shortened version of the
+> elements in the original array. It expects a callback that will return either
+> true or false. For all elements of the original array where the callback
+> returns true, add those elements to the new array. For all elements that
+> return false, don't add them to the new array.
+
 This will give us a new variable, `foodsToDisplay`, that will be an array of:
 
 - All foods from `foods` array if `filterBy` is set to "All"
@@ -298,7 +330,7 @@ This will give us a new variable, `foodsToDisplay`, that will be an array of:
 Now, we just need to use `foodsToDisplay` instead of `foods` when we're
 generating the `<li>` elements:
 
-```js
+```jsx
 const foodList = foodsToDisplay.map((food) => (
   <li key={food.id} onClick={() => handleLiClick(food.id)}>
     {food.name} | Heat: {food.heatLevel} | Cuisine: {food.cuisine}
@@ -308,16 +340,16 @@ const foodList = foodsToDisplay.map((food) => (
 
 Having both of these variables in state and knowing how to use them in
 conjunction with each other give us a lot of power in React! All we need to
-worry about is using our programming tools &mdash; working with _data_;
-manipulating _arrays_ &mdash; and React can take care of all the hard work of
+worry about is using our programming tools — working with _data_;
+manipulating _arrays_ — and React can take care of all the hard work of
 updating the DOM correctly.
 
 ## Conclusion
 
-When working with arrays in state, it's important to find ways to set state
-without mutating the underlying arrays. That means using array methods like
-`map` and `filter`, or the spread operator, to create copies of arrays before
-setting state.
+When working with arrays in state, it's important to find ways to set state by
+passing in a new array rather than mutating the original array. That means using
+array methods like `map` and `filter`, or the spread operator, to create copies
+of arrays before setting state.
 
 ## Resources
 
