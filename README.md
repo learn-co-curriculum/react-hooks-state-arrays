@@ -19,7 +19,7 @@ The starter code for this component is in `SpicyFoodList.js`. Before we walk
 through the solution, see if you can get this working by:
 
 - using a **state variable** to hold an **array** of spicy foods;
-- using that array to display each spicy food as a `<li>`; and
+- using that array to display each spicy food as an `<li>`; and
 - **adding a new spicy food to the array** when the button is clicked.
 
 One important rule to keep in mind when working with objects and arrays in
@@ -270,8 +270,8 @@ variable to determine which foods are being displayed!
 
 Let's start by talking through what new state we'll need to add. We need some
 way of keeping track of which option the user selected from the `<select>` tag.
-We'll also need to use that data to _filter_ the list of numbers and determine
-which foods to display.
+We'll also need to use that data to _filter_ the list of foods to determine
+which ones to display.
 
 Let's set up our initial state to be a string of "All" to match the first
 `<option>` in our dropdown:
@@ -280,7 +280,8 @@ Let's set up our initial state to be a string of "All" to match the first
 const [filterBy, setFilterBy] = useState("All");
 ```
 
-With this state variable in place, we can update the `<select>` element to set the `filterBy` variable when its value is changed, like so:
+With this state variable in place, we can update the `<select>` element to set
+the `filterBy` variable when its value is changed, like so:
 
 ```jsx
 function handleFilterChange(event) {
@@ -298,9 +299,10 @@ return (
 );
 ```
 
-Next, let's figure out how this filter value can be used to update what numbers
-are displayed. We will need to use _both_ of our state variables together to solve
-this problem! Here's how we can use the filter value to update which items are displayed:
+Next, let's figure out how this filter value can be used to update what foods
+are displayed. We will need to use _both_ of our state variables together to
+solve this problem! Here's how we can use the filter value to update which items
+are displayed:
 
 ```jsx
 const [foods, setFoods] = useState(spicyFoods);
@@ -339,10 +341,10 @@ const foodList = foodsToDisplay.map((food) => (
 ```
 
 Having both of these variables in state and knowing how to use them in
-conjunction with each other give us a lot of power in React! All we need to
-worry about is using our programming tools — working with _data_;
-manipulating _arrays_ — and React can take care of all the hard work of
-updating the DOM correctly.
+conjunction with each other gives us a lot of power in React! All we need to
+worry about is using our programming tools — working with _data_; manipulating
+_arrays_ — and React can take care of all the hard work of updating the DOM
+correctly.
 
 ## Conclusion
 
