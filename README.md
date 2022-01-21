@@ -3,10 +3,149 @@
 ## Learning Goals
 
 - Understand how to work with arrays in state
+- Add elements to arrays in state
+- Remove elements from arrays in state
+- Update elements in arrays in state
+- Conditionally render elements from arrays in state
 
-## Working With Arrays
+## Introduction
 
-### Adding Elements To Arrays In State
+In this lesson, we'll discuss how to work with arrays in state. Working with
+arrays and objects in state requires special care because of one simple rule:
+
+**React will only update state if a new object/array is passed to setState.**
+
+In this lesson, we'll learn some common patterns for creating new arrays when we
+need to add elements to an array in state, remove elements from arrays in state,
+and update individual items in arrays in state.
+
+Fork and clone this lesson so you can code along!
+
+## Understand Why We Can't Mutate State
+
+From the React documentation on state:
+
+> State can hold any kind of JavaScript value, including objects. But you
+> shouldn't change objects that you hold in the React state directly. Instead,
+> when you want to update an object, you need to create a new one (or make a
+> copy of an existing one), and then set the state to use that copy.
+>
+> — [React Docs: Updating Objects in State][updating objects]
+
+What does this mean? Consider the following example of a stateful component:
+
+```jsx
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount((count) => count + 1);
+  }
+
+  return <button onClick={handleClick}>{count}</button>;
+}
+```
+
+In an earlier lesson, we learned that when the button is clicked in this example
+component, the following occurs:
+
+1. Calling `setCount(1)` tells React that its internal state for our `Counter`
+   component's `count` value must update to 1
+2. React updates its internal state
+3. React **re-renders** the `Counter` component based on changes to internal
+   state
+4. When the `Counter` component is re-rendered, `useState` will return the
+   current value of React's internal state, which is now 1
+5. The value of `count` is now 1 within our `Counter` component
+6. Our component's JSX uses this new value to display the number 1 within the
+   button
+
+In step 3 above, one key detail is that React re-renders components based on
+_changes_ to state. For example, if we updated the code of our component in such
+a way that instead of incrementing the count when the button was clicked, we
+simply called `setCount` _with the same value_, React wouldn't re-render our
+component, since _we gave it the same value for state_ as it already has:
+
+```jsx
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    // setting state with the same value
+    setCount(count);
+  }
+
+  return <button onClick={handleClick}>{count}</button>;
+}
+```
+
+This detail is a small one, but crucial to understanding how state works in
+React! Consider the following refactor. Let's use an object instead of a number
+for our initial state:
+
+```jsx
+function Counter() {
+  const [count, setCount] = useState({ x: 0 });
+
+  function handleClick() {
+    // increment the count
+    count.x++;
+    // set state with the new count value
+    setCount(count);
+  }
+
+  return <button onClick={handleClick}>{count.x}</button>;
+}
+```
+
+If you try running this example code, you'll see that the component doesn't
+actually rerender with a new value. Why is this? Well, we're not actually
+providing a new value when we're calling `setCount`! Just like in the previous
+example, setting state with the same value will not cause React to re-render our
+component. Even though we've _mutated_ the value of the `count` object, the
+`count` object is still the same object in memory.
+
+You may have seen examples of this behavior in JavaScript previously:
+
+```js
+const count = { x: 0 }; // create an object and save a reference to it as "count"
+
+const alsoCount = count; // save a new reference to the same "count" object to "alsoCount"
+console.log(alsoCount === count); // true, both "count" and "alsoCount" point to the same object in memory
+
+count.x++; // mutate the count object
+
+console.log(count.x === alsoCount.x); // true, both "count" and "alsoCount" point to the same object in memory
+```
+
+So then, how can we work with objects in state in React? The answer is:
+
+**Any time we need to update an object or array in state, we need to make a new
+object and call `setState` with the new object**.
+
+For our counter example, here's how that would work:
+
+```jsx
+function Counter() {
+  const [count, setCount] = useState({ x: 0 });
+
+  function handleClick() {
+    // set state with a new object
+    setCount({ x: count.x + 1 });
+  }
+
+  return <button onClick={handleClick}>{count.x}</button>;
+}
+```
+
+In the example above, we are successfully updating state by creating a new
+object with the incremented value, and setting state with that new object.
+
+We must also follow this rule when working with arrays, and find ways to update
+array values without mutating state. In the rest of this lesson, we'll show some
+common patterns for this.
+
+## Adding Elements To Arrays In State
 
 When we need to represent a list of data in our UI, it's often a good idea to
 have the data for that list stored in an array! To give an example, let's build
@@ -16,19 +155,18 @@ out a component that does the following:
 - When the button is clicked, adds the newly generated food to a list
 
 The starter code for this component is in `SpicyFoodList.js`. Before we walk
-through the solution, see if you can get this working by:
+through the solution, see if you can get this working by **adding a new spicy
+food to the array when the button is clicked**.
 
-- using a **state variable** to hold an **array** of spicy foods;
-- using that array to display each spicy food as an `<li>`; and
-- **adding a new spicy food to the array** when the button is clicked.
+Recall that when working with objects and arrays in state:
 
-One important rule to keep in mind when working with objects and arrays in
-state:
+**React will only update state if a new object is passed to `setState`**.
 
-**React will only update state if a new object/array is passed to `setState`**.
 That means it's important to keep in mind which array methods _mutate_ arrays,
-and which can be used to make _copies_ of arrays (**hint**: the spread operator
-is your friend here).
+and which can be used to make _copies_ of arrays.
+
+For this deliverable, the goal is to create a new copy of the array which
+includes all the elements of the original array, plus a new element.
 
 Ok, give it a shot! Then scroll down to see a solution.
 
@@ -48,27 +186,8 @@ Ok, give it a shot! Then scroll down to see a solution.
 
 ...
 
-First, let's update our component to return some JSX elements based on this
-array in state. We can use `.map` on our array to generate an array of `<li>`
-elements from our array of foods, and display them in the `<ul>`:
-
-```jsx
-const foodList = foods.map((food) => (
-  <li key={food.id}>
-    {food.name} | Heat: {food.heatLevel} | Cuisine: {food.cuisine}
-  </li>
-));
-
-return (
-  <div>
-    <button onClick={handleAddFood}>Add New Food</button>
-    <ul>{foodList}</ul>
-  </div>
-);
-```
-
-Now that our foods are displaying, time for the moment of truth: can we update
-state and get new foods to display dynamically?
+So, how can we update state and get new foods to display dynamically? Here's the
+code:
 
 ```jsx
 function handleAddFood() {
@@ -78,15 +197,16 @@ function handleAddFood() {
 }
 ```
 
-This step is crucial, so let's break it down!
+This step is crucial, so let's break it down:
 
 ```jsx
 const newFoodArray = [...foods, newFood];
 ```
 
 Here, we're using the spread operator (`...`) to make a _copy_ of our `foods`
-array, and insert it into a _new_ array. We're also adding the newly generated
-food returned by the `getNewSpicyFood` function at the end of the array.
+array, and insert each element into a _new_ array. We're also adding the newly
+generated food returned by the `getNewSpicyFood` function at the end of the
+array.
 
 Remember, whenever we are updating state, it's important that we always pass a
 new object/array to `setState`. That's why we're using the spread operator here
@@ -133,6 +253,14 @@ one we want removed_.
 
 ...
 
+...
+
+...
+
+...
+
+...
+
 One common approach to this problem of creating a new array that doesn't include
 a specific element is using the `.filter` method. Here's how we can do it:
 
@@ -161,8 +289,8 @@ causing the food to be removed from the list.
 Here's a tough one! We've seen how to add and remove elements from arrays, but
 what about updating them?
 
-Let's update our click feature so that when a user clicks on a food, that
-food's heat level is incremented by 1.
+Let's update our click feature so that when a user clicks on a food, that food's
+heat level is incremented by 1.
 
 In the `handleLiClick` function, we need to figure out a way to update our array
 in state and increment the heat level _only_ for the food that was clicked.
@@ -180,6 +308,14 @@ from the original array, with one element updated_.
 
 ...
 
+...
+
+...
+
+...
+
+...
+
 One approach we can take to _updating_ items in arrays by creating a new array
 involves using the `.map` method. Calling `.map` will return a new array with
 the same length as our original array (which is what we want), with some
@@ -187,7 +323,7 @@ transformations applied to the elements in the array.
 
 Here's an example of using `.map` to update _one element_ of an array:
 
-```jsx
+```js
 [1, 2, 3].map((number) => {
   if (number === 3) {
     // if the number is the one we're looking for, increment it
@@ -203,7 +339,7 @@ Here's an example of using `.map` to update _one element_ of an array:
 So to use that technique to solve our problem, here's how our click event
 handler would look:
 
-```jsx
+```js
 function handleLiClick(id) {
   const newFoodArray = foods.map((food) => {
     if (food.id === id) {
@@ -259,6 +395,14 @@ Here's the JSX you'll need for this feature:
 Try building out this feature on your own, then we'll go through the solution.
 Think about what new _state variable_ you'll need to add, and how to use that
 variable to determine which foods are being displayed!
+
+...
+
+...
+
+...
+
+...
 
 ...
 
@@ -355,4 +499,7 @@ of arrays before setting state.
 
 ## Resources
 
+- [React Docs (beta): Updating Arrays in State](https://beta.reactjs.org/learn/updating-arrays-in-state)
 - [React State Arrays](https://www.robinwieruch.de/react-state-array-add-update-remove)
+
+[updating objects]: https://beta.reactjs.org/learn/updating-objects-in-state
