@@ -191,7 +191,7 @@ code:
 
 ```jsx
 function handleAddFood() {
-  const newFood = getNewSpicyFood();
+  const newFood = getNewRandomSpicyFood();
   const newFoodArray = [...foods, newFood];
   setFoods(newFoodArray);
 }
@@ -205,7 +205,7 @@ const newFoodArray = [...foods, newFood];
 
 Here, we're using the spread operator (`...`) to make a _copy_ of our `foods`
 array, and insert each element into a _new_ array. We're also adding the newly
-generated food returned by the `getNewSpicyFood` function at the end of the
+generated food returned by the `getNewRandomSpicyFood` function at the end of the
 array.
 
 Remember, whenever we are updating state, it's important that we always pass a

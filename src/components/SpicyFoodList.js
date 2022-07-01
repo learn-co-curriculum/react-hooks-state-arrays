@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { spicyFoods, getNewSpicyFood } from "../data";
+import { spicyFoods, getNewRandomSpicyFood } from "../data";
 
 function SpicyFoodList() {
   const [foods, setFoods] = useState(spicyFoods);
 
   function handleAddFood() {
-    const newFood = getNewSpicyFood();
+    const newFood = getNewRandomSpicyFood();
     console.log(newFood);
   }
 
